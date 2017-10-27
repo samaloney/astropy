@@ -78,6 +78,19 @@ class TestCore(FitsTestCase):
 
         assert FITSDiff(hdulist2, hdulist).identical is True
 
+    def test_fits_file_bytes_object(self):
+        """
+        Test when the fits file is passed as bytes object
+        """
+        hdulist = fits.open(self.data('tdim.fits').encode())
+
+        assert hdulist[0].filebytes() == 2880
+        assert hdulist[1].filebytes() == 5760
+
+        hdulist2 = fits.open(self.data('tdim.fits'))
+
+        assert FITSDiff(hdulist2, hdulist).identical is True
+
     def test_add_del_columns(self):
         p = fits.ColDefs([])
         p.add_col(fits.Column(name='FOO', format='3J'))
@@ -529,6 +542,21 @@ class TestConvenienceFunctions(FitsTestCase):
         data = np.zeros((100, 100))
         header = fits.Header()
         fits.writeto(self.temp('array.fits'), data, header=header,
+                     overwrite=True)
+        hdul = fits.open(self.temp('array.fits'))
+        assert len(hdul) == 1
+        assert (data == hdul[0].data).all()
+
+    def test_writeto_with_bytes(self):
+        """
+        Simple test for writing a trivial header and some data to a file
+        when the name is passed as a bytes object with the `writeto()`
+        convenience function.
+        """
+
+        data = np.zeros((100, 100))
+        header = fits.Header()
+        fits.writeto(self.temp('array.fits').encode(), data, header=header,
                      overwrite=True)
         hdul = fits.open(self.temp('array.fits'))
         assert len(hdul) == 1

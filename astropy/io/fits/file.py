@@ -163,6 +163,8 @@ class _File:
             self._open_fileobj(fileobj, mode, overwrite)
         elif isinstance(fileobj, str):
             self._open_filename(fileobj, mode, overwrite)
+        elif isinstance(fileobj, bytes):
+            self._open_filename(fileobj.decode(), mode, overwrite)
         else:
             self._open_filelike(fileobj, mode, overwrite)
 

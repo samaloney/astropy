@@ -397,6 +397,8 @@ def fileobj_name(f):
 
     if isinstance(f, str):
         return f
+    if isinstance(f, bytes):
+        return f
     elif isinstance(f, gzip.GzipFile):
         # The .name attribute on GzipFiles does not always represent the name
         # of the file being read/written--it can also represent the original
